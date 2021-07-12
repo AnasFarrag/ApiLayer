@@ -22,7 +22,7 @@ class Fawry(Resource):
 
         # ERP Data
         ERP_data = json.dumps(request_data)
-        print(ERP_data)
+
 
         # Adding authorization token to the headers
         headers = {"Authorization": settings.ERP_TOKEN}
