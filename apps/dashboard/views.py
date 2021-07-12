@@ -8,7 +8,7 @@ import settings
 class Index(Resource):
 
     def get(self):
-        pass
+        return 'API Service is running on ' + settings.ENV + ' Environment.'
 
 # Redirect to SSO Sign in page
 class VTSRegister(Resource):
