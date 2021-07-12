@@ -17,6 +17,9 @@ BASE_DIR = str(Path(__file__).resolve().parent) + '/'
 # Maxmum size of the uploaded files
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10458760 #(10458760/(1024*1024)) = 10MB
 
+# Allawed Extensions that can be uploaded on server
+ALLOWED_EXTENSIONS = ['gif', 'jpeg','jpg', 'bmp', 'png']
+
 # CLOUD cradintials
 CLOUD_URL = 'https://cloud.variiance.com/'
 CLOUD_USERNAME = 'muhammed'
@@ -28,10 +31,13 @@ ERP_TOKEN = 'token c14f1f8e6c0b04f:3354d1ba0f8c414'
 
 # SSO cradentials
 SSO_URL = 'https://sso.variiance.com/auth/admin/realms/Variiance/users/{}/reset-password'
-
+SSO_TOKEN = 'Bearer {}'
 # Fawry End Point
 FAWRY_ERP_END_POINT = 'payment_portal/en/fawry_callback'
 
 
 # Working Environment
 ENV = 'development'
+
+# Uploaded Media folder
+UPLOAD_DIR = BASE_DIR + 'media/'

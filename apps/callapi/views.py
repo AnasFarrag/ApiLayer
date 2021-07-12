@@ -15,8 +15,41 @@ class CallApi(Resource):
     depending on requests's method type it will redirect the request to its desired function.
 
     """
-
     def post(self):
+        image = request.files['file']
+
+        #image directory
+        image_dir = settings.UPLOAD_DIR + image.filename
+
+        if not utils.is_valid_image(image):
+            return {'message': 'File must be an image type ans less than 10MB'}
+        try:
+            # save image to the BASE directory
+            image.save(image_dir)
+
+            # set CLOUD URL
+            oc = owncloud.Client(settings.CLOUD_URL)
+
+            # Log In to the CLOUD
+            oc.login(settings.CLOUD_USERNAME, settings.CLOUD_PASSWORD)
+
+            # oc.mkdir('upload/123')
+            oc.put_file('upload/123/123.txt', image_dir)
+
+            link_info = oc.share_file_with_link('upload/123/123.txt')
+
+            os.remove(image_dir)
+
+            # we can also use
+            #os.path.join(settings.BASE_DIR, str(image.filename))
+
+        except Exception as e:
+            return {'message': 'down'}
+
+        return {'Here is your link:' :link_info.get_link() }
+
+
+    def posst(self):
         """
         it is a function which takes ERP end point and the posted data as an input
         then post this data to the ERP.
