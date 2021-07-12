@@ -1,0 +1,3 @@
+
+class FawryHelper():
+    pass
