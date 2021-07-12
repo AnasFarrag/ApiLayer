@@ -26,6 +26,9 @@ CLOUD_PASSWORD = 'muhammed123Muhammed'
 ERP_URL = 'https://erpdev.variiance.com/'
 ERP_TOKEN = 'token c14f1f8e6c0b04f:3354d1ba0f8c414'
 
+# SSO cradentials
+SSO_URL = 'https://sso.variiance.com/auth/admin/realms/Variiance/users/{}/reset-password'
+
 # Fawry End Point
 FAWRY_ERP_END_POINT = 'payment_portal/en/fawry_callback'
 
