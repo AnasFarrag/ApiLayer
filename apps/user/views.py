@@ -22,17 +22,27 @@ class ResetPassword(Resource):
         # get data of comming request
         request_data = request.get_json()
 
-        # get SSO sub
-        sso_sub = request_data['sub']
+        try:
+            # get SSO sub
+            sso_sub = request_data['sub']
+
+            # get token
+            token = request_data['token']
+
+            # get password
+            password = request_data['password']
+
+        except:
+            return utils.message['required_fields'],404
 
         # get SSO URL and then append SSO sub to it
         sso_url = settings.SSO_URL.format(sso_sub)
 
         # Wrapp the new password in a format which SSO can understand
-        sso_new_password = self.load_data(request_data['password'])
+        sso_new_password = self.load_data(password)
 
         # Adding authorization token to the headers
-        headers = {"Authorization": settings.SSO_TOKEN.format(request_data['token']), "Content-Type": "application/json"}
+        headers = {"Authorization": settings.SSO_TOKEN.format(token), "Content-Type": "application/json"}
 
 
         # Hit ERP API and get the response

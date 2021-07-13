@@ -38,4 +38,5 @@ def upload_file_to_cloud(arg):
 message = {
     'error': {'message': 'Something went wrong!'},
     'Reset_password_success': {'message': 'Your password has been reset successfully'},
+    'required_fields': {'message': 'Some fields are required!'}
 }
