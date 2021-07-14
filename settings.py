@@ -15,7 +15,7 @@ BASE_DIR = str(Path(__file__).resolve().parent) + '/'
 # BASE_DIR = os.path.abspath(os.path.join('../', os.path.dirname(__file__ ))) + '\\'
 
 # Maxmum size of the uploaded files
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10458760 #(10458760/(1024*1024)) = 10MB
+# DATA_UPLOAD_MAX_MEMORY_SIZE = 10458760 #(10458760/(1024*1024)) = 10MB
 
 # Allawed Extensions that can be uploaded on server
 ALLOWED_EXTENSIONS = ['gif', 'jpeg','jpg', 'bmp', 'png']
