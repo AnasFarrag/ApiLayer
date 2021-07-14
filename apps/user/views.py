@@ -268,10 +268,10 @@ class GenerateCertificate(Resource):
         #take the data from the request
         request_data = request.get_json()
 
-        my_image = Image.open("{}images/image.jpg".format(settings.STATIC_DIR))
+        my_image = Image.open("{}certificate_vol.jpg".format(settings.UPLOAD_DIR))
 
         print(type(my_image))
-        link = UserHelper.upload_file(my_image)
+        link = UserHelper.upload_file(my_image, '124554')
         print(link)
 
         student_name = request_data['student_name']
