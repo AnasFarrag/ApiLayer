@@ -12,6 +12,11 @@ from requests_futures.sessions import FuturesSession
 import os , json
 import demjson
 
+
+#Anas
+from PIL import Image, ImageFont, ImageDraw 
+
+
 class UpdateUser(Resource):
 
     image_link = None
@@ -181,16 +186,6 @@ class UpdateUserInfo(Resource):
         response = requests.post(erp_url ,data= ERP_data, headers= headers )
         return response.json()
 
-
-        \
-
-        
-        
-        #print(hh)
-        #return hh
-    
-   
-
 class ResetPassword(Resource):
 
     def post(self):
@@ -250,25 +245,79 @@ class ResetPassword(Resource):
 
 class GenerateCertificate(Resource):
       
+    '''
+    
+    '''
+
     def post(self):
-        pass
+        #take the data from the request
+        request_data = request.get_json()
+
+        my_image = Image.open("{}images/image.jpg".format(settings.STATIC_DIR))
+
+        print(type(my_image))
+        link = UserHelper.upload_file(my_image)
+        print(link)
+
+        student_name = request_data['student_name']
+        course_name = request['course_name']
+        course_hours = request['course_hours']
+        #text = request_data['text']
+
+        # date in interval time
+        #date = 
+
+        
+
+        title_font = ImageFont.truetype('{}Cairo-Regular'.format(settings.STATIC_DIR),200)
+        
+
+        image_editable = ImageDraw.Draw(my_image)
+
+
+        #obj.text( (x,y), Text, font, fill)
+        image = image_editable.text((15,15), text, (237, 230, 211), font=title_font)
+        my_image.save("result.jpg")
+
+        return image
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class UserInstructor(Resource):
         '''
         Description
 
-        we give a specific person an instructor role
+        we give a specific person an instructor role depend on a login token from SSO
+
         '''
         def post(self):
+
+           
             #get the data from the request
             request_data = request.get_json()
-
+            if not request_data : 
+                return utils.message['required_fields'],404
             #check user_sub
             user_sub = request_data['user_sub']    
-            # print(user_sub)
+           
 
-            if not user_sub : 
-                utils.message['required_fields'],404
+            if not user_sub or user_sub == "" : 
+                return utils.message['required_fields'],404
 
             
 
@@ -281,29 +330,38 @@ class UserInstructor(Resource):
 
                 #take token from loginSSO
                 token = self.loginSSO()
-                #take the data 
+
+                if token is False:
+                    return utils.message['login_in_SSO_not_valid'],404
+                #take the data in theat shape
                 data = [{
                         "id" : "b2021e74-528b-4d7c-9012-a50b36ace032",
                         "name" : "instructors"
                     }]
                 
                 
-                     
+                #the headers of the SSO      
                 headers = {
                     "Authorization": "bearer {}".format(token),
                     "Content-Type": "application/json"
                     }
                     
-                    
+                #the response 
                 response = requests.post(url=url_instructor_role , json = data, headers=headers)
+               
                     
                 if response.ok :
                         
                     return utils.message['user_instructor_successs'],200
+
+                elif response.status_code == 404:
+
+                    return response.json(),404
+                    
                     
 
             except:
-
+                
                     return "there's someting Error!"
                 #post endpoint and data
 
@@ -312,7 +370,8 @@ class UserInstructor(Resource):
                 #if true Send message to the chat_id for the instructor
 
                 # if not return response
-               
+            
+            
                
 
         def loginSSO(self):

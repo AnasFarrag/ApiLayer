@@ -43,6 +43,9 @@ message = {
     'unauthorized': {'message':'Unauthorized!'},
     'update_user_success': {'message':'Profile has been updated successfully'},
     'user_instructor_success': 'لقد تم تفعيل حساب المدرس الخاص بك، يمكنك تسجيل الدخول في لوحة التحكم الخاص بك لإنشاء اول حصة لك على منصة فاريانس',
-    'user_instructor_successs': "user added succefully",
-    
+    'user_instructor_successs':{"message" : "user added succefully"} ,
+
+
+    #Anas Messages
+    'login_in_SSO_not_valid': {'message':"there's someting wrong during the login!"}
 }

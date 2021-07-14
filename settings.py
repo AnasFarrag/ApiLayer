@@ -47,3 +47,16 @@ ENV = 'development'
 
 # Uploaded Media folder
 UPLOAD_DIR = BASE_DIR + 'media/'
+
+
+
+
+
+
+
+
+
+
+#static Dir
+STATIC_DIR = BASE_DIR + 'static/'
+
