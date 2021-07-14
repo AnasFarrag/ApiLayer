@@ -36,10 +36,6 @@ def upload_file_to_cloud(arg):
     pass
 
 message = {
-    'error': {'message': 'Something went wrong!'},
-    'Reset_password_success': {'message': 'Your password has been reset successfully'},
-    'required_fields': {'message': 'Some fields are required!'},
-    'user_instructor_success': 'لقد تم تفعيل حساب المدرس الخاص بك، يمكنك تسجيل الدخول في لوحة التحكم الخاص بك لإنشاء اول حصة لك على منصة فاريانس',
-    'user_instructor_successs': "user added succefully",
+
     
 }
