@@ -25,7 +25,7 @@ def create_app(name):
     app.config.from_object('config.'+ settings.ENV)
 
     # set CORS origin and Allowed Hosts
-    CORS(app, resources={r"/*": {"origins": ["http://localhost:3000"]}})
+    CORS(app)
 
     return app
 

@@ -34,6 +34,9 @@ SSO_BASE_URL = 'https://sso.variiance.com/'
 SSO_RESET_PASSWORD_URL = SSO_BASE_URL + 'auth/admin/realms/Variiance/users/{}/reset-password'
 SSO_UPDATE_USER_URL = SSO_BASE_URL + 'auth/admin/realms/Variiance/users/{}'
 SSO_TOKEN = 'Bearer {}'
+SSO_LOGIN = SSO_BASE_URL + 'auth/realms/Variiance/protocol/openid-connect/token'
+SSO_INSTRUCTOR_ROLE = SSO_BASE_URL + 'auth/admin/realms/Variiance/users/{}/' + 'role-mappings/clients/facef935-9db4-494a-a8f7-f9d3680e2f28'
+
 
 # Fawry End Point
 FAWRY_ERP_END_POINT = 'payment_portal/en/fawry_callback'
