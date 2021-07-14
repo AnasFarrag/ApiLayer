@@ -13,6 +13,9 @@ class Config():
     SERVER_NAME = '10.0.0.5:5000'
     TRAP_HTTP_EXCEPTIONS = True
 
+    # check if the uploaded image is less than the max file limit
+    MAX_CONTENT_LENGTH = 10458760  #(10458760/(1024*1024)) = 10MB
+
 # class for production configurations
 class production(Config):
     """
