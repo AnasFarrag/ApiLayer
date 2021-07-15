@@ -8,23 +8,16 @@ import settings
 from helpers import utils
 from helpers.user.user_helpers import UserHelper
 
-from requests_futures.sessions import FuturesSession
+
 import os , json
 import demjson
+from PIL import Image, ImageFont, ImageDraw
+
 
 class UpdateUser(Resource):
 
-    sso_sub = None
-    token = None
-    first_name = None
-    last_name = None
-    phone_number = None
-    email = None
-    file = None
-    image_link = None
-    url = None
-
-
+    #HINT
+    # Heavey process 1-check services 2-upload image to server 3-upload image to cloud
     def post(self):
 
         # get request data
@@ -43,10 +36,10 @@ class UpdateUser(Resource):
         except:
             return utils.message['required_fields'],400
 
-
         # check if SSO, ERP, and CLOUD  is running
-        if not self.check_services():
+        if not utils.is_services_online():
             return utils.message['server_down'],503
+
 
         try:
             # get image from the request
@@ -75,23 +68,6 @@ class UpdateUser(Resource):
 
 
     # other class functions
-
-    # check if SSO, ERP, and CLOUD are running
-    def check_services(self):
-        session = FuturesSession()
-        # These requests will run at the same time
-        try:
-            cloud = session.get(settings.CLOUD_URL)
-            erp = session.get(settings.ERP_URL)
-            sso = session.get(settings.SSO_BASE_URL)
-
-            cloud_result = cloud.result()
-            erp_result = erp.result()
-            sso_result = sso.result()
-
-            return True
-        except:
-            return False
 
     def upload_image(self):
         # assign image url to a variable
@@ -208,9 +184,7 @@ class UpdateUserInfo(Resource):
 
 class ResetPassword(Resource):
 
-    sso_sub = None
-    token = None
-    password = None
+
 
     def post(self):
 

@@ -1,5 +1,4 @@
 import os
-
 # global class to set config variables for Flask
 class Config():
     """

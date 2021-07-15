@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import owncloud
 # Application definition
 INSTALLED_APPS = [
     'callapi',
@@ -25,6 +26,20 @@ CLOUD_URL = 'https://cloud.variiance.com/'
 CLOUD_USERNAME = 'muhammed'
 CLOUD_PASSWORD = 'muhammed123Muhammed'
 
+# Cloud login
+
+# set CLOUD URL
+CLOUD = owncloud.Client(CLOUD_URL)
+# Login to CLOUD
+CLOUD.login(CLOUD_USERNAME, CLOUD_PASSWORD)
+# Base directory of all users in cloud
+USERS_BASE_DIR_IN_CLOUD = 'upload/users'
+# Create Users directory if not exist
+try:
+    CLOUD.mkdir(USERS_BASE_DIR_IN_CLOUD)
+except Exception as e:
+    pass
+
 # ERP cradentials
 ERP_URL = 'https://erpdev.variiance.com/'
 ERP_TOKEN = 'token c14f1f8e6c0b04f:3354d1ba0f8c414'
@@ -47,3 +62,11 @@ ENV = 'development'
 
 # Uploaded Media folder
 UPLOAD_DIR = BASE_DIR + 'media/'
+
+STATIC_DIR = BASE_DIR + 'static/'
+
+
+# Services Domains
+SSO_DOMAIN = 'sso.variiance.com'
+CLOUD_DOMAIN = 'cloud.variiance.com'
+ERP_DOMAIN = 'erpdev.variiance.com'

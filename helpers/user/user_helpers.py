@@ -1,6 +1,6 @@
-import owncloud
 import os
 import settings
+from settings import CLOUD
 from helpers import utils
 class UserHelper():
 
@@ -16,27 +16,16 @@ class UserHelper():
             # save image to the BASE directory
             image.save(image_dir)
 
-            # set CLOUD URL
-            oc = owncloud.Client(settings.CLOUD_URL)
-
-            # Log In to the CLOUD
-            oc.login(settings.CLOUD_USERNAME, settings.CLOUD_PASSWORD)
 
             try:
-                base_dir = 'upload/users'
-                oc.mkdir(base_dir)
-            except Exception as e:
-                pass
-
-            try:
-                users_dir = '{}/{}'.format(base_dir,sso_sub)
-                oc.mkdir(users_dir)
+                users_dir = '{}/{}'.format(settings.USERS_BASE_DIR_IN_CLOUD,sso_sub)
+                CLOUD.mkdir(users_dir)
             except Exception as e:
                 pass
 
             try:
                 image_dir_in_cloud = '{}/images'.format(users_dir)
-                oc.mkdir(image_dir_in_cloud)
+                CLOUD.mkdir(image_dir_in_cloud)
             except Exception as e:
                 pass
 
@@ -44,9 +33,9 @@ class UserHelper():
             cloud_dir = '{}/{}'.format(image_dir_in_cloud, 'profile_img{}'.format(os.path.splitext(image.filename)[1]))
 
 
-            oc.put_file(cloud_dir, image_dir)
+            CLOUD.put_file(cloud_dir, image_dir)
 
-            image_link = oc.share_file_with_link(cloud_dir)
+            image_link = CLOUD.share_file_with_link(cloud_dir)
 
             # Remove image from media directory
             os.remove(image_dir)
