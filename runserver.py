@@ -41,9 +41,6 @@ def create_cloud_dirs():
         print('month already exist')
         pass
 
-    else:
-        print('date not changed')
-
 # CLOUD LOGIN and Create Dirs ( Login Every 1 Hour)
 def invoke_cloud_login_and_create_dirs():
     if login_to_cloud():
