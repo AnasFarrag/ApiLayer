@@ -7,11 +7,11 @@ import requests
 import settings
 from helpers import utils
 from helpers.user.user_helpers import UserHelper
-import concurrent.futures
 from requests_futures.sessions import FuturesSession
-import os , json
-import demjson
-import uuid
+import concurrent.futures
+
+import json
+
 
 #Anas
 from PIL import Image, ImageFont, ImageDraw 
@@ -20,22 +20,14 @@ from datetime import datetime
 import arabic_reshaper
 from bidi.algorithm import get_display
 
-
 class UpdateUser(Resource):
 
-    sso_sub = None
-    token = None
-    first_name = None
-    last_name = None
-    phone_number = None
-    email = None
-    file = None
-    image_link = None
-    url = None
-
-
+    #HINT
+    # Heavey process 1-check services 2-upload image to server 3-upload image to cloud
     def post(self):
 
+        # initialize requesrs object
+        self.session = FuturesSession()
         # get request data
         request_data = request.form
 
@@ -52,10 +44,17 @@ class UpdateUser(Resource):
         except:
             return utils.message['required_fields'],400
 
-
         # check if SSO, ERP, and CLOUD  is running
-        if not self.check_services():
+        if not utils.is_services_online():
             return utils.message['server_down'],503
+
+
+        # Save data in the the ERP
+        ERP_response = self.is_phone_number_exist()
+
+        if ERP_response[0] is not True:
+            return ERP_response
+
 
         try:
             # get image from the request
@@ -65,46 +64,74 @@ class UpdateUser(Resource):
             self.image_link = self.upload_image()
             if self.image_link is False:
                 return utils.message['image_not_valid']
-        except:
+        except Exception as e:
+            print(e)
             pass
 
-        # Save data in the the ERP
-        ERP_response = self.save_data_in_erp()
+        with concurrent.futures.ThreadPoolExecutor() as executor:
 
-        if ERP_response[0] is not True:
-            return ERP_response
+            # Save data in the the ERP
+            ERP_response = executor.submit(self.save_data_in_erp)
 
-        # save user's data in SSO
-        SSO_response = self.save_data_in_sso()
+            # save user's data in SSO
+            SSO_response =  executor.submit(self.save_data_in_sso)
 
-        if SSO_response[0] is not True:
-            return SSO_response
+            ERP_response = ERP_response.result()
+            SSO_response = SSO_response.result()
 
-        return utils.message['update_user_success'], 200
+            if ERP_response[0] is not True:
+                return ERP_response
+
+
+            if SSO_response[0] is not True:
+                return SSO_response
+
+            return utils.message['update_user_success'], 200
 
 
     # other class functions
 
-    # check if SSO, ERP, and CLOUD are running
-    def check_services(self):
-        session = FuturesSession()
-        # These requests will run at the same time
+    def is_phone_number_exist(self):
+
+        #ERP full path
+        erp_url = settings.ERP_URL + settings.ERP_CHECK_PHONE_URL
+
+        # ERP data
+        ERP_data = {
+            'phone': self.phone_number,
+            'email': self.email
+        }
+
+        # Adding authorization token to the headers
+        headers = {"Authorization": settings.ERP_TOKEN}
+
+        # Hit ERP API and get the response
         try:
-            cloud = session.get(settings.CLOUD_URL)
-            erp = session.get(settings.ERP_URL)
-            sso = session.get(settings.SSO_BASE_URL)
+            response = self.session.post(erp_url, json = ERP_data , headers = headers)
+            response = response.result()
 
-            cloud_result = cloud.result()
-            erp_result = erp.result()
-            sso_result = sso.result()
 
-            return True
-        except:
-            return False
+
+            # return response data if the resquest is not corrupted
+            return (True,) if (response.json()['status'] != 'error') else (utils.message['phone_exist'], 409)
+        except Exception as e:
+            print(e)
+            return utils.message['error'], response.status_code
+
 
     def upload_image(self):
+        #check if the uploaded file is valid image
+        if not utils.is_valid_image(self.file.filename):
+            return False
+
+        #image directory
+        image_dir = settings.UPLOAD_DIR + self.file.filename
+
+        # save image to the BASE directory
+        self.file.save(image_dir)
+
         # assign image url to a variable
-        self.image_link = UserHelper.upload_file(self.file, self.sso_sub)
+        self.image_link = UserHelper.upload_file(self.file.filename)
         return self.image_link
 
 
@@ -112,14 +139,14 @@ class UpdateUser(Resource):
         try:
 
             # ERP Data
-            ERP_data = json.dumps({
+            ERP_data = {
                 'url': self.url,
                 'first_name': self.first_name,
                 'last_name': self.last_name,
                 'student_mobile_number': self.phone_number,
                 'student_email_id': self.email,
                 'image': self.image_link,
-            })
+            }
 
             # ERP Full path
             erp_url = settings.ERP_URL + self.url
@@ -129,8 +156,8 @@ class UpdateUser(Resource):
 
             # Hit ERP API and get the response
             try:
-                response = requests.post(erp_url, data = ERP_data , headers = headers)
-
+                response = self.session.post(erp_url, json = ERP_data , headers = headers)
+                response = response.result()
                 # return response data if the resquest is not corrupted
                 return (True,) if response.ok else (utils.message['error'], response.status_code)
             except:
@@ -145,14 +172,14 @@ class UpdateUser(Resource):
         try:
 
             # SSO Data
-            SSO_data = json.dumps({
+            SSO_data = {
                 'firstName': self.first_name,
                 'lastName': self.last_name,
                 'attributes': {
                     'phoneNumber': self.phone_number,
                     'image': self.image_link,
                 }
-            })
+            }
 
 
             # SSO Full path
@@ -163,8 +190,8 @@ class UpdateUser(Resource):
 
             # Hit ERP API and get the response
             try:
-                response = requests.put(sso_url, data = SSO_data , headers = headers)
-
+                response = self.session.put(sso_url, json = SSO_data , headers = headers)
+                response = response.result()
                 # return response data if the resquest is not corrupted
                 return (True,) if response.ok else (utils.message['unauthorized'], 401)
             except:
@@ -186,13 +213,11 @@ class UpdateUserInfo(Resource):
     
     def post(self):
         #get data from Request
-        data = request.get_json()
+        ERP_data = request.get_json()
         #get endpoint
-        endpoint = data['url']
+        endpoint = ERP_data['url']
         #the totasl erp url
         erp_url = settings.ERP_URL + endpoint
-
-        ERP_data = json.dumps(data)
         
         #the header
         headers = {"Authorization": settings.ERP_TOKEN ,
@@ -201,7 +226,7 @@ class UpdateUserInfo(Resource):
         
         try:
             #post the endpoint and return the data
-            response = requests.post(erp_url ,data= ERP_data, headers= headers )
+            response = requests.post(erp_url ,json= ERP_data, headers= headers )
             return response.json()
         except:
             return utils.message['required_fields'],400
@@ -209,9 +234,7 @@ class UpdateUserInfo(Resource):
 
 class ResetPassword(Resource):
 
-    sso_sub = None
-    token = None
-    password = None
+
 
     def post(self):
 
@@ -233,7 +256,12 @@ class ResetPassword(Resource):
         sso_url = settings.SSO_RESET_PASSWORD_URL.format(self.sso_sub)
 
         # Wrapp the new password in a format which SSO can understand
-        sso_new_password = self.load_data()
+        sso_new_password = {
+
+                'type': 'password',
+                'value': self.password,
+                'temporary': 'false',
+        }
 
         # Adding authorization token to the headers
         headers = {"Authorization": settings.SSO_TOKEN.format(self.token), "Content-Type": "application/json"}
@@ -241,7 +269,7 @@ class ResetPassword(Resource):
 
         # Hit ERP API and get the response
         try:
-            response = requests.put(sso_url, data = sso_new_password , headers = headers)
+            response = requests.put(sso_url, json = sso_new_password , headers = headers)
 
             if response.ok:
                 return utils.message['Reset_password_success'],200
@@ -251,16 +279,6 @@ class ResetPassword(Resource):
         except:
             return utils.message['error']
 
-    # A function, its mission is to wrapp password in a format which SSO can understand and return JSON object
-    def load_data(self):
-
-        data = json.dumps({
-            'type': 'password',
-            'value': self.password,
-            'temporary': 'false',
-        })
-
-        return data
 
 
 class GenerateCertificate(Resource):

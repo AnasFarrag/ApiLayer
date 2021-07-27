@@ -27,6 +27,21 @@ CLOUD_URL = 'https://cloud.variiance.com/'
 CLOUD_USERNAME = 'muhammed'
 CLOUD_PASSWORD = 'muhammed123Muhammed'
 
+# Cloud login
+
+# set CLOUD URL
+CLOUD = owncloud.Client(CLOUD_URL)
+# Login to CLOUD
+CLOUD.login(CLOUD_USERNAME, CLOUD_PASSWORD)
+# Base directory of all users in cloud
+USERS_BASE_DIR_IN_CLOUD = 'upload/'
+
+DATE = datetime.now()
+YEAR = DATE.year
+MONTH = DATE.month
+UPLOAD_DIR_IN_CLOUD = f'{USERS_BASE_DIR_IN_CLOUD}{YEAR}/{MONTH}'
+
+
 # ERP cradentials
 ERP_URL = 'https://erpdev.variiance.com/'
 ERP_TOKEN = 'token c14f1f8e6c0b04f:3354d1ba0f8c414'
@@ -43,6 +58,8 @@ SSO_INSTRUCTOR_ROLE = SSO_BASE_URL + 'auth/admin/realms/Variiance/users/{}/' + '
 # Fawry End Point
 FAWRY_ERP_END_POINT = 'payment_portal/en/fawry_callback'
 
+# check phone endpoint
+ERP_CHECK_PHONE_URL = 'profile/ar/check_phone'
 
 # Working Environment
 ENV = 'development'
@@ -50,24 +67,10 @@ ENV = 'development'
 # Uploaded Media folder
 UPLOAD_DIR = BASE_DIR + 'media/'
 
-
-
-
 USER_LANGUAGE =  SSO_BASE_URL + 'auth/admin/realms/Variiance/users/{}'
-
-
-
-
 
 #static Dir
 STATIC_DIR = BASE_DIR + 'static/'
-
-
-
-
-
-
-
 
 #Certifation 
 ERP_CERTIFICATE =  ERP_URL + 'api/resource/Enrollment/{}'
@@ -83,3 +86,10 @@ DATE = datetime.now()
 YEAR = DATE.year
 MONTH = DATE.month
 UPLOAD_DIR_IN_CLOUD = f'{USERS_BASE_DIR_IN_CLOUD}{YEAR}/{MONTH}'
+STATIC_DIR = BASE_DIR + 'static/'
+
+
+# Services Domains
+SSO_DOMAIN = 'sso.variiance.com'
+CLOUD_DOMAIN = 'cloud.variiance.com'
+ERP_DOMAIN = 'erpdev.variiance.com'

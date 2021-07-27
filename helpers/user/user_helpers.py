@@ -1,61 +1,35 @@
-import owncloud
 import os
 import settings
 from helpers import utils
-class UserHelper():
+import uuid
+import time
 
-    def upload_file(image, sso_sub):
-
-        #image directory
-        image_dir = settings.UPLOAD_DIR + image.filename
-        #check if the uploaded file is valid image
-        if not utils.is_valid_image(image):
-            return False
-
+class UserHelper:
+    def upload_file(image_name):
         try:
-            # save image to the BASE directory
-            image.save(image_dir)
 
-            # set CLOUD URL
-            oc = owncloud.Client(settings.CLOUD_URL)
+            #image directory
+            image_dir = settings.UPLOAD_DIR + image_name
 
-            # Log In to the CLOUD
-            oc.login(settings.CLOUD_USERNAME, settings.CLOUD_PASSWORD)
+            cloud_dir = ''.join( (settings.UPLOAD_DIR_IN_CLOUD, '/', str(uuid.uuid4()), image_name) )
 
-            try:
-                base_dir = 'upload/users'
-                oc.mkdir(base_dir)
-            except Exception as e:
-                pass
-
-            try:
-                users_dir = '{}/{}'.format(base_dir,sso_sub)
-                oc.mkdir(users_dir)
-            except Exception as e:
-                pass
-
-            try:
-                image_dir_in_cloud = '{}/images'.format(users_dir)
-                oc.mkdir(image_dir_in_cloud)
-            except Exception as e:
-                pass
-
-
-            cloud_dir = '{}/{}'.format(image_dir_in_cloud, 'profile_img{}'.format(os.path.splitext(image.filename)[1]))
-
-
-            oc.put_file(cloud_dir, image_dir)
-
-            image_link = oc.share_file_with_link(cloud_dir)
-
+            start = time.perf_counter()
+            settings.CLOUD.put_file(cloud_dir, image_dir)
+            end = time.perf_counter()
+            print(round(end-start,2))
+            start = time.perf_counter()
+            image_link = settings.CLOUD.share_file_with_link(cloud_dir)
+            end = time.perf_counter()
+            print(round(end-start,2))
             # Remove image from media directory
             os.remove(image_dir)
 
             # we can also use
             #os.path.join(settings.BASE_DIR, str(image.filename))
-
             return image_link.get_link() + '/preview'
+
         except Exception as e:
+            print(e)
             return False
 
 def upload_certificate(image_name,sso_sub):
