@@ -15,6 +15,8 @@ class Config():
     # check if the uploaded image is less than the max file limit
     MAX_CONTENT_LENGTH = 10458760  #(10458760/(1024*1024)) = 10MB
 
+    SCHEDULER_API_ENABLED = True
+
 # class for production configurations
 class production(Config):
     """

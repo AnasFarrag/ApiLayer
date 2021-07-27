@@ -12,7 +12,7 @@ class Fawry(Resource):
     def post(self):
 
         # data of fawry request
-        request_data = request.get_json()
+        ERP_data = request.get_json()
 
         # Fawry end point
         fawry_erp_end_point = settings.FAWRY_ERP_END_POINT
@@ -20,8 +20,6 @@ class Fawry(Resource):
         # ERP Full path
         erp_url = settings.ERP_URL + fawry_erp_end_point
 
-        # ERP Data
-        ERP_data = json.dumps(request_data)
 
 
         # Adding authorization token to the headers
@@ -29,7 +27,7 @@ class Fawry(Resource):
 
         # Hit ERP API and get the response
         try:
-            response = requests.post(erp_url, data = ERP_data , headers = headers)
+            response = requests.post(erp_url, json = ERP_data , headers = headers)
 
             # TODO No return response
             # return response data if the resquest is not corrupted

@@ -30,7 +30,7 @@ class CallApi(Resource):
             end_point = request_data['url']
 
             # ERP Data
-            ERP_data = json.dumps(request_data['data'])
+            ERP_data = request_data['data']
         except:
             return utils.message['required_fields']
 
@@ -42,7 +42,7 @@ class CallApi(Resource):
 
         # Hit ERP API and get the response
         try:
-            response = requests.post(erp_url, data = ERP_data , headers = headers)
+            response = requests.post(erp_url, json = ERP_data , headers = headers)
 
             # return response data if the resquest is not corrupted
             return response.json() if response.ok else utils.message['error'], response.status_code
@@ -92,7 +92,7 @@ class CallApi(Resource):
             end_point = request_data['url']
 
             # ERP Data
-            ERP_data = json.dumps(request_data['data'])
+            ERP_data = request_data['data']
         except:
             return utils.message['required_fields']
 
@@ -104,7 +104,7 @@ class CallApi(Resource):
 
         # Hit ERP API and get the response
         try:
-            response = requests.put(erp_url, data = ERP_data , headers = headers)
+            response = requests.put(erp_url, json = ERP_data , headers = headers)
 
             # return response data if the resquest is not corrupted
             return response.json() if response.ok else settings.utils['error'], response.status_code
@@ -121,7 +121,7 @@ class CallApi(Resource):
             #ERP end point
             end_point = request.args.get('url')
         except:
-            return utils.message['required_fields'] 
+            return utils.message['required_fields']
 
         # ERP full path
         erp_url = settings.ERP_URL + str(end_point)

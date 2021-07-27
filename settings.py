@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import owncloud
+from datetime import datetime
 # Application definition
 INSTALLED_APPS = [
     'callapi',
@@ -33,12 +34,13 @@ CLOUD = owncloud.Client(CLOUD_URL)
 # Login to CLOUD
 CLOUD.login(CLOUD_USERNAME, CLOUD_PASSWORD)
 # Base directory of all users in cloud
-USERS_BASE_DIR_IN_CLOUD = 'upload/users'
-# Create Users directory if not exist
-try:
-    CLOUD.mkdir(USERS_BASE_DIR_IN_CLOUD)
-except Exception as e:
-    pass
+USERS_BASE_DIR_IN_CLOUD = 'upload/'
+
+DATE = datetime.now()
+YEAR = DATE.year
+MONTH = DATE.month
+UPLOAD_DIR_IN_CLOUD = f'{USERS_BASE_DIR_IN_CLOUD}{YEAR}/{MONTH}'
+
 
 # ERP cradentials
 ERP_URL = 'https://erpdev.variiance.com/'
@@ -56,6 +58,8 @@ SSO_INSTRUCTOR_ROLE = SSO_BASE_URL + 'auth/admin/realms/Variiance/users/{}/' + '
 # Fawry End Point
 FAWRY_ERP_END_POINT = 'payment_portal/en/fawry_callback'
 
+# check phone endpoint
+ERP_CHECK_PHONE_URL = 'profile/ar/check_phone'
 
 # Working Environment
 ENV = 'development'
