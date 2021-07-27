@@ -27,6 +27,7 @@ message = {
 
     #Anas Messages
     'login_in_SSO_not_valid': {'message':"there's someting wrong during the login!"},
-    'user_instructor_successs': {'message': "user added succefully"}
+    'user_instructor_successs': {'message': "user added succefully"},
+    'save_language_successs': {'message': "language saved succefully"},
 
 }

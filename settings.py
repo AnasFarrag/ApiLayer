@@ -1,5 +1,7 @@
 import os
 from pathlib import Path
+import owncloud
+from datetime import datetime
 # Application definition
 INSTALLED_APPS = [
     'callapi',
@@ -51,7 +53,7 @@ UPLOAD_DIR = BASE_DIR + 'media/'
 
 
 
-
+USER_LANGUAGE =  SSO_BASE_URL + 'auth/admin/realms/Variiance/users/{}'
 
 
 
@@ -60,3 +62,24 @@ UPLOAD_DIR = BASE_DIR + 'media/'
 #static Dir
 STATIC_DIR = BASE_DIR + 'static/'
 
+
+
+
+
+
+
+
+#Certifation 
+ERP_CERTIFICATE =  ERP_URL + 'api/resource/Enrollment/{}'
+
+# set CLOUD URL
+CLOUD = owncloud.Client(CLOUD_URL)
+# Login to CLOUD
+CLOUD.login(CLOUD_USERNAME, CLOUD_PASSWORD)
+# Base directory of all users in cloud
+USERS_BASE_DIR_IN_CLOUD = 'upload/'
+
+DATE = datetime.now()
+YEAR = DATE.year
+MONTH = DATE.month
+UPLOAD_DIR_IN_CLOUD = f'{USERS_BASE_DIR_IN_CLOUD}{YEAR}/{MONTH}'

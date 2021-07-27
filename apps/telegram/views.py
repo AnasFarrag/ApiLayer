@@ -47,7 +47,7 @@ class TelegramSubscription(Resource):
 
     def sendMessage(self,chat_id , message):
         '''
-        paass
+        send message for the user Replaying to the user
         
         '''
         #the total telegram URL
