@@ -14,4 +14,5 @@ class Index(Resource):
 class VTSRegister(Resource):
 
     def get(self):
-        pass
+        url ='https://sso.variiance.com/auth/realms/Variiance/protocol/openid-connect/registrations?client_id=reactJs&redirect_uri=https%3A%2F%2Fvts.variiance.com%2F&state=b7dbb02b-fdb5-422d-bdd7-0743830ef8f6&response_mode=fragment&response_type=code&scope=openid&nonce=fcd0d8ed-2c5c-4093-8795-54b27060af65'
+        return redirect(url)
