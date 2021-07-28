@@ -9,42 +9,45 @@ from datetime import datetime
 
 
 
-# CLOUD Login
-def login_to_cloud():
-    settings.CLOUD.login(settings.CLOUD_USERNAME, settings.CLOUD_PASSWORD)
-    print("logged in")
-    return True
+class CloudScheduler():
 
-# Create CLOUD Dirs
-def create_cloud_dirs():
-    date_now = datetime.now()
-    current_year = date_now.year
-    current_month = date_now.month
+    # CLOUD Login
+    def login_to_cloud(self):
+        settings.CLOUD.login(settings.CLOUD_USERNAME, settings.CLOUD_PASSWORD)
+        print("logged in")
+        return True
 
-    settings.YEAR = current_year
-    settings.MONTH = current_month
+    # Create CLOUD Dirs
+    def create_cloud_dirs(self):
+        date_now = datetime.now()
+        current_year = date_now.year
+        current_month = date_now.month
 
-    year_dir = settings.USERS_BASE_DIR_IN_CLOUD + str(settings.YEAR)
-    month_dir = year_dir + '/' + str(settings.MONTH)
+        settings.YEAR = current_year
+        settings.MONTH = current_month
 
-    try:
-        settings.CLOUD.mkdir(year_dir)
-        print('create year')
-    except Exception as e:
-        print('year already exist')
-        pass
+        year_dir = settings.USERS_BASE_DIR_IN_CLOUD + str(settings.YEAR)
+        month_dir = year_dir + '/' + str(settings.MONTH)
 
-    try:
-        settings.CLOUD.mkdir(month_dir)
-        print('create month')
-    except Exception as e:
-        print('month already exist')
-        pass
+        try:
+            settings.CLOUD.mkdir(year_dir)
+            print('create year')
+        except Exception as e:
+            print('year already exist')
+            pass
 
+        try:
+            settings.CLOUD.mkdir(month_dir)
+            print('create month')
+        except Exception as e:
+            print('month already exist')
+            pass
+
+CloudSchedulerObj = CloudScheduler()
 # CLOUD LOGIN and Create Dirs ( Login Every 1 Hour)
 def invoke_cloud_login_and_create_dirs():
-    if login_to_cloud():
-        create_cloud_dirs()
+    if CloudSchedulerObj.login_to_cloud():
+        CloudSchedulerObj.create_cloud_dirs()
 
 
 def create_app(name):
@@ -68,7 +71,7 @@ def create_app(name):
 
     # initialize scheduler
     scheduler = BackgroundScheduler()
-    scheduler.add_job(invoke_cloud_login_and_create_dirs, trigger='interval', hours=1)
+    scheduler.add_job(invoke_cloud_login_and_create_dirs, trigger='interval', hours=1, misfire_grace_time=None)
     scheduler.start()
 
     try:

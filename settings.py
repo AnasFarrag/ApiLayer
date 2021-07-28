@@ -62,7 +62,7 @@ FAWRY_ERP_END_POINT = 'payment_portal/en/fawry_callback'
 ERP_CHECK_PHONE_URL = 'profile/ar/check_phone'
 
 # Working Environment
-ENV = 'development'
+ENV = 'production'
 
 # Uploaded Media folder
 UPLOAD_DIR = BASE_DIR + 'media/'
@@ -72,7 +72,7 @@ USER_LANGUAGE =  SSO_BASE_URL + 'auth/admin/realms/Variiance/users/{}'
 #static Dir
 STATIC_DIR = BASE_DIR + 'static/'
 
-#Certifation 
+#Certifation
 ERP_CERTIFICATE =  ERP_URL + 'api/resource/Enrollment/{}'
 
 # set CLOUD URL
