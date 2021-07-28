@@ -484,8 +484,9 @@ class UserInstructor(Resource):
                 #the response 
                 response = requests.post(url=url_instructor_role , json = data, headers=headers)    
                 if response.ok :
-
+                    
                     return utils.message['user_instructor_successs'],200
+                    
 
                 elif response.status_code == 404:
     
@@ -508,11 +509,12 @@ class UserInstructor(Resource):
                         'client_secret' : 'fe56abe3-4489-4ada-b0c6-7aa36ccd2e6d',
                         'grant_type' : 'client_credentials'
                 }
-                #post data to url
-                response = self.session.post(total_url , data=data).result()
-                response = response.json()
+                
                 try:
-                #check access_token from the response
+                    #post data to url
+                    response = self.session.post(total_url , data=data).result()
+                    response = response.json()
+                     #check access_token from the response
                     if response['access_token']:
                         return response['access_token']
 
@@ -553,21 +555,23 @@ class SaveLanguage(Resource):
                     "Content-Type": "application/json"
                     }
         
-        #get response from SSO
-        res = requests.get(url=end_point , headers=headers).json() 
-        #change value of language to the new one
-        res['attributes']['language'] = [language]
-        #update languge
-        response = instructoor.session.put(url=end_point , json= res , headers=headers).result()
+       
+        
         try:
-
+            #get response from SSO
+            res = requests.get(url=end_point , headers=headers).json() 
+            #change value of language to the new one
+            res['attributes']['language'] = [language]
+            #update languge
+        
+            response = instructoor.session.put(url=end_point , json= res , headers=headers).result()
             #chech response
             if response.ok :
                 return utils.message['save_language_successs'] , 200
                 #return requests.get(url=end_point , headers=headers).json()
                 
         except:
-            return utils.message['error'] , response.status_code
+            return utils.message['error'] , 404
 
         
         return response.json() , response.status_code

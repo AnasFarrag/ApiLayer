@@ -49,9 +49,10 @@ class TelegramSubscription(Resource):
                 message =  "يرجي كتابه البريد الالكتروني بطريقه صحيحه"
 
             self.sendMessage(chat_id , message)
-    
+            
         except:
              return utils.message['error']
+        
 
     def sendMessage(self,chat_id , message):
         '''
@@ -95,3 +96,6 @@ class TelegramSubscription(Resource):
             
         except :
             return False
+
+
+
