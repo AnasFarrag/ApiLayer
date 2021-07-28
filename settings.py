@@ -93,3 +93,9 @@ STATIC_DIR = BASE_DIR + 'static/'
 SSO_DOMAIN = 'sso.variiance.com'
 CLOUD_DOMAIN = 'cloud.variiance.com'
 ERP_DOMAIN = 'erpdev.variiance.com'
+
+
+#telegram 
+TELEGRAM_URL = 'https://api.telegram.org/bot'
+TELEGRAM_ERP_ENDPOINT = 'https://erpdev.variiance.com/profile/en/set_telegram_id'
+TELEGRAM_token = '1741114391:AAGOPYkIqlRXPasQit3qFuSPrQ2VD6JT2aY'
